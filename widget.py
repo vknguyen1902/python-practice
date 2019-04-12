@@ -11,6 +11,7 @@ def updateScatter(attr, old, new):
     cds_auto.data = dict(
             xVal = auto[xSelect.value],
             yVal = auto['City_MPG'])
+    scatter_chart.xaxis.axis_label = xSelect.value 
 
 cds_auto = ColumnDataSource(data = dict(
             xVal = auto['HP'],
