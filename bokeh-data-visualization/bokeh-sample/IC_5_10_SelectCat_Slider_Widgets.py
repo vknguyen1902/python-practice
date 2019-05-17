@@ -44,7 +44,7 @@ def updateBar(attr,old, new):
                         yVal=dfNew['City_MPG'])
 
 # Getting the dataset ready for use in the charts
-dfAuto = pd.read_excel('data/Auto_Insu.xlsx')
+dfAuto = pd.read_excel('Auto_Insu.xlsx')
 
 # Preparing CDS object with only the columns that we need
 cdsAuto = ColumnDataSource(data=dict(
