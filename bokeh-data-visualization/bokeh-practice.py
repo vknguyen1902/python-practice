@@ -17,23 +17,25 @@ from bokeh.models import BoxSelectTool, NumeralTickFormatter, Select
 # how many buildings will be compliant in each year over a number of years
 # how many buildings have installed boilers each year over a number of years
 
-# Load dataset and view the first few rows
-data = pd.read_excel('NYCOilConsumption-2018.xlsx')
-
 # Event handler function for Line Chart
 def updateLine(attr, old, new):
     print(old,new)
     
-    # Update label of axes by the value selected from select widget lineSelect
-    boiler_chart.yaxes.axis_label = lineSelect.value
+    # Read the current value off the dropdown
+    x = lineSelect.value
     
-    # Update data source accordingly to the lineSelect.value
-    boiler_new = boiler.groupby([lineSelect.value]).count()
-    boiler_new = boiler_new.rename(columns={'BBL_id':'NumberOfBuildings'}).reset_index()
+    # Reset the data
+    boiler_new = boiler.groupby(x).count().rename(columns={'BBL_id':'NumberOfBuildings'}).reset_index()
     
     # Update column data source 
-    cds_boiler.data = dict(xVal=boiler_new[lineSelect.value],
+    cds_boiler.data = dict(xVal=boiler_new[x],
                            yVal=boiler_new['NumberOfBuildings'])
+        
+    # Update label of axes by the value selected from select widget lineSelect
+    boiler_chart.xaxis.axis_label = x
+    
+# Loading dataset and view the first few rows
+data = pd.read_excel('NYCOilConsumption-2018.xlsx')
 
 # Get building id and boiler retirement date 
 boiler = data[['BBL_id','BoilerRetirement_dateEstimated',
@@ -69,8 +71,9 @@ boiler_chart.y_range.start=0
 
 # Create and add hover tooltips to our boiler_chart figure
 boiler_hover = HoverTool(tooltips=[
-    ("Year","@Year"), 
-    ("Total Number of Buildings","@NumberOfBuildings")])
+    ("Year","@xVal"), 
+    ("Total Number of Buildings","@yVal")])
+
 boiler_chart.add_tools(boiler_hover)
 
 # Add SELECT widget
